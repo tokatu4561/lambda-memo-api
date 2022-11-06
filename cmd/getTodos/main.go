@@ -1,19 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/tokatu4561/tasks/pkg/application"
+	"github.com/tokatu4561/tasks/pkg/domain"
 	"github.com/tokatu4561/tasks/pkg/infrastructure/dynamo"
 	"github.com/tokatu4561/tasks/pkg/usecases"
 )
 
-type Memo struct {
-	MemoID    string `dynamo:"MemoID,hash"`
-	Text      string `dynamo:"Text"`
-	CreatedAt string `dynamo:"CreatedAt"`
+type Response struct {
+	Tasks []*domain.Task `json: "tasks"`
 }
 
 func NewTaskController() *application.TaskController {
@@ -27,9 +26,22 @@ func NewTaskController() *application.TaskController {
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	ctl := NewTaskController()
 
-	ctl.GetTasks()
+	tasks, err := ctl.GetTasks(request)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			Body:       err.Error(),
+			StatusCode: 500,
+		}, err
+	}
+
+	response := Response{
+		Tasks: tasks,
+	}
+
+	jsonByte, _ := json.MarshalIndent(response, "", "\t")
+
 	return events.APIGatewayProxyResponse{
-		Body:       fmt.Sprintf("Hello, %v", string("hello")),
+		Body:       string(jsonByte),
 		StatusCode: 200,
 	}, nil
 }

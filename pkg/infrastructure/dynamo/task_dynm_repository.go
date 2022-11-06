@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
 	"github.com/tokatu4561/tasks/pkg/domain"
 )
@@ -47,6 +48,34 @@ func (t *TaskRepositoryGateway) AddTask(task *domain.Task) (*domain.Task, error)
 	return newTask, nil
 }
 
+func (t *TaskRepositoryGateway) UpdateTask(task *domain.Task) (*domain.Task, error) {
+	updatedTask, err := Update(t.databaseHandler, task)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedTask, nil
+}
+
+func (t *TaskRepositoryGateway) DeleteTask(task *domain.Task) error {
+	err := Delete(t.databaseHandler, task)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *TaskRepositoryGateway) GetTask(id string) (*domain.Task, error) {
+	task, err := Get(t.databaseHandler, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return task, nil
+}
+
 func (t *TaskRepositoryGateway) GetTasks() ([]*domain.Task, error) {
 	tasks, err := GetAll(t.databaseHandler)
 
@@ -60,7 +89,8 @@ func (t *TaskRepositoryGateway) GetTasks() ([]*domain.Task, error) {
 func Insert(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
 	table := db.Table("Task")
 
-	err := table.Put(&domain.Task{ID: 1, UserID: 1, Title: task.Title, CreatedAt: time.Now(), UpdatedAt: time.Now()}).Run()
+	newId := uuid.New()
+	err := table.Put(&domain.Task{ID: newId.String(), UserID: 1, Title: task.Title, CreatedAt: time.Now(), UpdatedAt: time.Now()}).Run()
 	if err != nil {
 		return nil, err
 	}
@@ -68,16 +98,52 @@ func Insert(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
 	return nil, nil
 }
 
-// GetALl returns all tasks in db
-func GetAll(db *dynamo.DB) ([]*domain.Task, error) {
-	table := db.Table("Momo")
+func Update(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
+	table := db.Table("Task")
 
-	var task *domain.Task
+	var updatedTask *domain.Task
 
-	err := table.Get("ID").One(&task)
+	err := table.Update("ID", task.ID).Set("MyText", "My Second Text").Value(&updatedTask)
 	if err != nil {
 		return nil, err
 	}
 
-	return &task, err
+	return updatedTask, nil
+}
+
+func Delete(db *dynamo.DB, task *domain.Task) error {
+	table := db.Table("Task")
+
+	err := table.Delete("ID", task.ID).Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Get(db *dynamo.DB, id string) (*domain.Task, error) {
+	table := db.Table("Task")
+
+	var task *domain.Task
+
+	err := table.Get("ID", id).One(&task)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func GetAll(db *dynamo.DB) ([]*domain.Task, error) {
+	table := db.Table("Task")
+
+	var tasks []*domain.Task
+
+	err := table.Scan().All(tasks)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
 }
