@@ -1,22 +1,38 @@
-package infrastructure
+package dynamo
 
 import (
-	"database/sql"
-	"log"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/guregu/dynamo"
 	"github.com/tokatu4561/tasks/pkg/domain"
 )
 
+// TODO: env管理する
+const AWS_REGION = "ap-northeast-1"
+const DYNAMO_ENDPOINT = "http://dynamodb:8000"
+
 type TaskRepositoryGateway struct {
-	databaseHandler *sql.DB
+	databaseHandler *dynamo.DB
 }
 
 type DatabaseHandler struct {
-	Conn *sql.DB
+	Conn *dynamo.DB
 }
 
-func NewTaskRepository(db *sql.DB) domain.TaskRepositoryInterface {
+func NewDynamoDatabaseHandler() *dynamo.DB {
+	sess, _ := session.NewSession(&aws.Config{
+		Region:      aws.String(AWS_REGION),
+		Endpoint:    aws.String(DYNAMO_ENDPOINT),
+		Credentials: credentials.NewStaticCredentials("dummy", "dummy", "dummy"),
+	})
+
+	return dynamo.New(sess)
+}
+
+func NewTaskRepository(db *dynamo.DB) domain.TaskRepositoryInterface {
 	return &TaskRepositoryGateway{
 		databaseHandler: db,
 	}
@@ -41,16 +57,10 @@ func (t *TaskRepositoryGateway) GetTasks() ([]*domain.Task, error) {
 	return tasks, nil
 }
 
-func Insert(db *sql.DB, task *domain.Task) (*domain.Task, error) {
-	stmt := `insert into tasks (user_id, title, created_at, updated_at)
-		values ($1, $2, $3, $4) returning id`
+func Insert(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
+	table := db.Table("Task")
 
-	_, err := db.Exec(stmt,
-		task.UserID,
-		task.Title,
-		time.Now(),
-		time.Now(),
-	)
+	err := table.Put(&domain.Task{ID: 1, UserID: 1, Title: task.Title, CreatedAt: time.Now(), UpdatedAt: time.Now()}).Run()
 	if err != nil {
 		return nil, err
 	}
@@ -59,32 +69,15 @@ func Insert(db *sql.DB, task *domain.Task) (*domain.Task, error) {
 }
 
 // GetALl returns all tasks in db
-func GetAll(db *sql.DB) ([]*domain.Task, error) {
-	query := `select id, user_id, title, created_at, updated_at from tasks`
+func GetAll(db *dynamo.DB) ([]*domain.Task, error) {
+	table := db.Table("Momo")
 
-	var tasks []*domain.Task
-	rows, err := db.Query(query)
+	var task *domain.Task
+
+	err := table.Get("ID").One(&task)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
-	for rows.Next() {
-		var task domain.Task
-		err := rows.Scan(
-			&task.ID,
-			&task.UserID,
-			&task.Title,
-			&task.CreatedAt,
-			&task.UpdatedAt,
-		)
-		if err != nil {
-			log.Println("Error scanning", err)
-			return nil, err
-		}
-
-		tasks = append(tasks, &task)
-	}
-
-	return tasks, nil
+	return &task, err
 }

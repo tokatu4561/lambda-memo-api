@@ -1,4 +1,4 @@
-package interactors
+package usecases
 
 import "github.com/tokatu4561/tasks/pkg/domain"
 
