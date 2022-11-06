@@ -7,6 +7,6 @@ require (
 
 replace gopkg.in/yaml.v2 => gopkg.in/yaml.v2 v2.2.8
 
-module line-bot-task
+module github.com/tokatu4561/tasks
 
 go 1.16
