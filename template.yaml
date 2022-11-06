@@ -6,11 +6,6 @@ Description: >
   Sample SAM Template for line-dynamo-lambda
 Description: >
   Sample function
-Parameters: 
-  LineBotChannelSecret:
-    Type: String
-  LineBotChannelToken:
-    Type: String
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -21,11 +16,11 @@ Globals:
     TracingEnabled: True
 
 Resources:
-  HelloWorldFunction:
+  GetTaskListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: line-bot-task/
-      Handler: line-bot-task
+      CodeUri: cmd/getTasks
+      Handler: getTasks
       Runtime: go1.x
       Architectures:
         - x86_64
@@ -33,27 +28,76 @@ Resources:
         CatchAll:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /apigw
+            Path: /tasks
+            Method: GET
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          TABLE_NAME: sample_table
+  GetTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: cmd/getTask
+      Handler: getTask
+      Runtime: go1.x
+      Architectures:
+        - x86_64
+      Events:
+        Calc:
+          Type: Api
+          Properties:
+            Path: /task
+            Method: GET
+  CreateTaskFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cmd/addTask
+      Handler: addTask
+      Runtime: go1.x
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /task
             Method: POST
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          LINE_BOT_CHANNEL_SECRET: !Ref LineBotChannelSecret
-          LINE_BOT_CHANNEL_TOKEN: !Ref LineBotChannelToken
           TABLE_NAME: sample_table
-  # CalcFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     CodeUri: calc/dist
-  #     Handler: app.lambdaHandler
-  #     Runtime: go1.x
-  #     Architectures:
-  #       - x86_64
-  #     Events:
-  #       Calc:
-  #         Type: Api
-  #         Properties:
-  #           Path: /apigw
-  #           Method: post
+  UpdateTaskListFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cmd/updateTask
+      Handler: updateTask
+      Runtime: go1.x
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /task
+            Method: PUT
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          TABLE_NAME: sample_table
+  DeleteTaskListFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cmd/deleteTask
+      Handler: deleteTask
+      Runtime: go1.x
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /task
+            Method: DELETE
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          TABLE_NAME: sample_table
 
   SampleTable:
     Type: AWS::DynamoDB::Table
