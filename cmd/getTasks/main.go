@@ -10,7 +10,7 @@ import (
 )
 
 type Response struct {
-	Tasks []*domain.Task `json: "tasks"`
+	Tasks []*domain.Task `json:"tasks"`
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

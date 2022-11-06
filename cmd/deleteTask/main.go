@@ -1,19 +1,23 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/tokatu4561/tasks/pkg/application/di"
 )
 
-// TODO: env管理する
-const AWS_REGION = "ap-northeast-1"
-const DYNAMO_ENDPOINT = "http://dynamodb:8000"
-
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	ctl := di.NewTaskController()
+
+	err := ctl.DeleteTask(request)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			Body:       err.Error(),
+			StatusCode: 500,
+		}, err
+	}
+
 	return events.APIGatewayProxyResponse{
-		Body:       fmt.Sprintf("Hello, %v", string("hello")),
 		StatusCode: 200,
 	}, nil
 }

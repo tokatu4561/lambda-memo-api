@@ -16,7 +16,7 @@ type Response struct {
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	ctl := di.NewTaskController()
 
-	task, err := ctl.GetTask(request)
+	task, err := ctl.UpdateTask(request)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			Body:       err.Error(),
