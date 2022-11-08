@@ -4,7 +4,7 @@ build:
 	sam build
 
 start-api:
-	sam local start-api --env-vars env.json --docker-network lambda-local
+	sam local start-api --env-vars env.json --docker-network lambda-local --port 9000
 
 invoke:
 	sam local invoke --env-vars env.json
