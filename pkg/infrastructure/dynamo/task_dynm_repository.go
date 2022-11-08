@@ -140,10 +140,10 @@ func GetAll(db *dynamo.DB) ([]*domain.Task, error) {
 
 	var tasks []*domain.Task
 
-	err := table.Scan().All(tasks)
+	err := table.Scan().All(&tasks)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	return tasks, nil
 }

@@ -3,11 +3,11 @@ package domain
 import "time"
 
 type Task struct {
-	ID        string    `json:"id"`
-	UserID    int       `json:"user_id"`
-	Title     string    `json:"title"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        string    `dynamo:"id" json:"id"`
+	UserID    int       `dynamo:"userId" json:"user_id"`
+	Title     string    `dynamo:"title" json:"title"`
+	CreatedAt time.Time `dynamo:"-" json:"created_at"`
+	UpdatedAt time.Time `dynamo:"-" json:"updated_at"`
 }
 
 type TaskRepositoryInterface interface {

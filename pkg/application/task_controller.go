@@ -2,18 +2,17 @@ package application
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/tokatu4561/tasks/pkg/domain"
 )
 
 type Task struct {
-	ID        string    `json:"id"`
-	UserID    int       `json:"user_id"`
-	Title     string    `json:"title"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        string `dynamo:"id" json:"id"`
+	UserID    int    `dynamo:"userId" json:"user_id"`
+	Title     string `dynamo:"title" json:"title"`
+	CreatedAt string `dynamo:"-" json:"created_at"`
+	UpdatedAt string `dynamo:"-" json:"updated_at"`
 }
 
 type TaskUsecase domain.TaskUseCaseInterface
