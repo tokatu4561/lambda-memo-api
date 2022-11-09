@@ -65,7 +65,7 @@ func (t *TaskController) CreateTask(request events.APIGatewayProxyRequest) (*dom
 
 	task := domain.Task{
 		ID:        newId.String(),
-		UserID:    1,
+		UserID:    requestPayload.Task.UserID,
 		Title:     requestPayload.Task.Title,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
