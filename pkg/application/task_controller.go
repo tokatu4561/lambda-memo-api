@@ -2,8 +2,11 @@ package application
 
 import (
 	"encoding/json"
+	"log"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/google/uuid"
 	"github.com/tokatu4561/tasks/pkg/domain"
 )
 
@@ -53,15 +56,19 @@ func (t *TaskController) GetTask(request events.APIGatewayProxyRequest) (*domain
 
 func (t *TaskController) CreateTask(request events.APIGatewayProxyRequest) (*domain.Task, error) {
 	type RequestPayload struct {
-		task Task
+		Task Task `json:"task"`
 	}
 	var requestPayload RequestPayload
-	t.readJson(request, requestPayload)
+	t.readJson(request, &requestPayload)
+
+	newId := uuid.New()
 
 	task := domain.Task{
-		ID:     requestPayload.task.ID,
-		UserID: 1,
-		Title:  requestPayload.task.Title,
+		ID:        newId.String(),
+		UserID:    1,
+		Title:     requestPayload.Task.Title,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	newTask, err := t.taskUsecase.AddTask(&task)
@@ -98,7 +105,7 @@ func (t *TaskController) DeleteTask(request events.APIGatewayProxyRequest) error
 		task Task
 	}
 	var requestPayload RequestPayload
-	t.readJson(request, requestPayload)
+	t.readJson(request, &requestPayload)
 
 	task := domain.Task{
 		ID:     requestPayload.task.ID,
@@ -115,7 +122,8 @@ func (t *TaskController) DeleteTask(request events.APIGatewayProxyRequest) error
 }
 
 func (c *TaskController) readJson(req events.APIGatewayProxyRequest, data interface{}) error {
-	err := json.Unmarshal([]byte(req.Body), &req)
+	log.Println("BODY読み取り", req.Body)
+	err := json.Unmarshal([]byte(req.Body), &data)
 	if err != nil {
 		return err
 	}

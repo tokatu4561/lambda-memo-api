@@ -14,6 +14,11 @@ Globals:
     Tracing: Active
   Api:
     TracingEnabled: True
+    Cors:
+      AllowOrigin: "'*'"
+      AllowCredentials: true
+      AllowMethods: "'GET,POST,PUT,DELETE'"
+      AllowHeaders: "'Authorization,X-XSRF-TOKEN,Content-Type,ContentType,x-amz-security-token,x-amz-date'"
 
 Resources:
   GetTaskListFunction:

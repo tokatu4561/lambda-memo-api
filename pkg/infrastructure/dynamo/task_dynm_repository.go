@@ -1,12 +1,9 @@
 package dynamo
 
 import (
-	"time"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/google/uuid"
 	"github.com/guregu/dynamo"
 	"github.com/tokatu4561/tasks/pkg/domain"
 )
@@ -89,13 +86,14 @@ func (t *TaskRepositoryGateway) GetTasks() ([]*domain.Task, error) {
 func Insert(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
 	table := db.Table("Task")
 
-	newId := uuid.New()
-	err := table.Put(&domain.Task{ID: newId.String(), UserID: 1, Title: task.Title, CreatedAt: time.Now(), UpdatedAt: time.Now()}).Run()
+	newTask := task
+
+	err := table.Put(&newTask).Run()
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	return newTask, nil
 }
 
 func Update(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
