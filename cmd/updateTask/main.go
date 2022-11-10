@@ -14,6 +14,13 @@ type Response struct {
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	headers := map[string]string{
+		"Access-Control-Allow-Origin":     "*",
+		"Access-Control-Allow-Methods":    "PUT",
+		"Access-Control-Allow-Credential": "true",
+		"Access-Control-Allow-Headers":    "Authorization,X-XSRF-TOKEN,Content-Type,ContentType,x-amz-security-token,x-amz-date",
+	}
+
 	ctl := di.NewTaskController()
 
 	task, err := ctl.UpdateTask(request)
@@ -32,6 +39,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 	return events.APIGatewayProxyResponse{
 		Body:       string(jsonByte),
+		Headers:    headers,
 		StatusCode: 200,
 	}, nil
 }

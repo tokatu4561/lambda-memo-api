@@ -2,7 +2,6 @@ package application
 
 import (
 	"encoding/json"
-	"log"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -84,12 +83,13 @@ func (t *TaskController) UpdateTask(request events.APIGatewayProxyRequest) (*dom
 		task Task
 	}
 	var requestPayload RequestPayload
-	t.readJson(request, requestPayload)
+	t.readJson(request, &requestPayload)
 
 	task := domain.Task{
-		ID:     requestPayload.task.ID,
-		UserID: 1,
-		Title:  requestPayload.task.Title,
+		ID:        requestPayload.task.ID,
+		UserID:    requestPayload.task.UserID,
+		Title:     requestPayload.task.Title,
+		UpdatedAt: time.Now(),
 	}
 
 	updatedTask, err := t.taskUsecase.UpdateTask(&task)
@@ -109,7 +109,7 @@ func (t *TaskController) DeleteTask(request events.APIGatewayProxyRequest) error
 
 	task := domain.Task{
 		ID:     requestPayload.task.ID,
-		UserID: 1,
+		UserID: requestPayload.task.UserID,
 		Title:  requestPayload.task.Title,
 	}
 
@@ -122,7 +122,6 @@ func (t *TaskController) DeleteTask(request events.APIGatewayProxyRequest) error
 }
 
 func (c *TaskController) readJson(req events.APIGatewayProxyRequest, data interface{}) error {
-	log.Println("BODY読み取り", req.Body)
 	err := json.Unmarshal([]byte(req.Body), &data)
 	if err != nil {
 		return err
