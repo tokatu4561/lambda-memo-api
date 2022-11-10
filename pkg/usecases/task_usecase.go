@@ -42,7 +42,7 @@ func (t *TaskUsecase) AddTask(task *domain.Task) (*domain.Task, error) {
 }
 
 func (t *TaskUsecase) UpdateTask(task *domain.Task) (*domain.Task, error) {
-	updatedTask, err := t.Repository.AddTask(task)
+	updatedTask, err := t.Repository.UpdateTask(task)
 
 	if err != nil {
 		return nil, err

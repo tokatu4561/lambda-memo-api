@@ -101,7 +101,7 @@ func Update(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
 
 	var updatedTask *domain.Task
 
-	err := table.Update("ID", task.ID).Set("MyText", "My Second Text").Value(&updatedTask)
+	err := table.Update("id", task.ID).Set("title", task.Title).Set("updatedAt", task.UpdatedAt).Value(&updatedTask)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func Update(db *dynamo.DB, task *domain.Task) (*domain.Task, error) {
 func Delete(db *dynamo.DB, task *domain.Task) error {
 	table := db.Table("Task")
 
-	err := table.Delete("ID", task.ID).Run()
+	err := table.Delete("id", task.ID).Run()
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func Get(db *dynamo.DB, id string) (*domain.Task, error) {
 
 	var task *domain.Task
 
-	err := table.Get("ID", id).One(&task)
+	err := table.Get("id", id).One(&task)
 	if err != nil {
 		return nil, err
 	}

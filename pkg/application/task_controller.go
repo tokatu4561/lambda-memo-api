@@ -80,15 +80,15 @@ func (t *TaskController) CreateTask(request events.APIGatewayProxyRequest) (*dom
 
 func (t *TaskController) UpdateTask(request events.APIGatewayProxyRequest) (*domain.Task, error) {
 	type RequestPayload struct {
-		task Task
+		Task Task
 	}
 	var requestPayload RequestPayload
 	t.readJson(request, &requestPayload)
 
 	task := domain.Task{
-		ID:        requestPayload.task.ID,
-		UserID:    requestPayload.task.UserID,
-		Title:     requestPayload.task.Title,
+		ID:        requestPayload.Task.ID,
+		UserID:    requestPayload.Task.UserID,
+		Title:     requestPayload.Task.Title,
 		UpdatedAt: time.Now(),
 	}
 
