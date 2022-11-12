@@ -130,7 +130,7 @@ func Get(db *dynamo.DB, id string) (*domain.Task, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return task, nil
 }
 
 func GetAll(db *dynamo.DB) ([]*domain.Task, error) {

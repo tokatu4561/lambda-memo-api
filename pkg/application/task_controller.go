@@ -10,11 +10,11 @@ import (
 )
 
 type Task struct {
-	ID        string `dynamo:"id" json:"id"`
-	UserID    int    `dynamo:"userId" json:"user_id"`
-	Title     string `dynamo:"title" json:"title"`
-	CreatedAt string `dynamo:"-" json:"created_at"`
-	UpdatedAt string `dynamo:"-" json:"updated_at"`
+	ID        string `json:"id"`
+	UserID    int    `json:"user_id"`
+	Title     string `json:"title"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 type TaskUsecase domain.TaskUseCaseInterface
@@ -39,13 +39,9 @@ func (t *TaskController) GetTasks(request events.APIGatewayProxyRequest) ([]*dom
 }
 
 func (t *TaskController) GetTask(request events.APIGatewayProxyRequest) (*domain.Task, error) {
-	type RequestPayload struct {
-		id string
-	}
-	var requestPayload RequestPayload
-	t.readJson(request, requestPayload)
+	id := request.PathParameters["id"]
 
-	task, err := t.taskUsecase.GetTask(requestPayload.id)
+	task, err := t.taskUsecase.GetTask(id)
 	if err != nil {
 		return nil, err
 	}
