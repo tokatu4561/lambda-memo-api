@@ -98,15 +98,15 @@ func (t *TaskController) UpdateTask(request events.APIGatewayProxyRequest) (*dom
 
 func (t *TaskController) DeleteTask(request events.APIGatewayProxyRequest) error {
 	type RequestPayload struct {
-		task Task
+		Task Task `json:"task"`
 	}
 	var requestPayload RequestPayload
 	t.readJson(request, &requestPayload)
 
 	task := domain.Task{
-		ID:     requestPayload.task.ID,
-		UserID: requestPayload.task.UserID,
-		Title:  requestPayload.task.Title,
+		ID:     requestPayload.Task.ID,
+		UserID: requestPayload.Task.UserID,
+		Title:  requestPayload.Task.Title,
 	}
 
 	err := t.taskUsecase.DeleteTask(&task)
