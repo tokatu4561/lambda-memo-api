@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,7 +16,7 @@ type Response struct {
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	headers := map[string]string{
-		"Access-Control-Allow-Origin":     "*",
+		"Access-Control-Allow-Origin":     os.Getenv("FRONT_ORIGIN"),
 		"Access-Control-Allow-Methods":    "PUT",
 		"Access-Control-Allow-Credential": "true",
 		"Access-Control-Allow-Headers":    "Authorization,X-XSRF-TOKEN,Content-Type,ContentType,x-amz-security-token,x-amz-date",

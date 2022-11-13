@@ -7,6 +7,10 @@ Description: >
 Description: >
   Sample function
 
+Parameters: 
+  FrontOrigin: 
+    Type: String
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -15,7 +19,7 @@ Globals:
   Api:
     TracingEnabled: True
     Cors:
-      AllowOrigin: "'*'"
+      AllowOrigin: "'https://main.dtq6u00gtzcf6.amplifyapp.com'"
       AllowCredentials: true
       AllowMethods: "'GET,POST,PUT,DELETE'"
       AllowHeaders: "'Authorization,X-XSRF-TOKEN,Content-Type,ContentType,x-amz-security-token,x-amz-date'"
@@ -37,7 +41,37 @@ Resources:
             Method: GET
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          TABLE_NAME: sample_table
+          FRONT_ORIGIN: !Ref FrontOrigin
+          DYNAMODB_ENDPOINT: ""
+          TABLE_NAME: Task
+    ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Policies:
+        - PolicyName: GetTaskListFunction
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:List*
+                  - dynamodb:DescribeReservedCapacity*
+                  - dynamodb:DescribeLimits
+                  - dynamodb:DescribeTimeToLive
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  #- dynamodb:BatchGet*
+                  #- dynamodb:DescribeStream
+                  #- dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  #- dynamodb:BatchWrite*
+                  #- dynamodb:CreateTable
+                  #- dynamodb:Delete*
+                  #- dynamodb:Update*
+                  #- dynamodb:PutItem
+                Resource: "*"
   GetTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -52,6 +86,39 @@ Resources:
           Properties:
             Path: /tasks/{id}
             Method: GET
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          FRONT_ORIGIN: !Ref FrontOrigin
+          DYNAMODB_ENDPOINT: ""
+          TABLE_NAME: Task
+    ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Policies:
+        - PolicyName: GetTaskListFunction
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:List*
+                  - dynamodb:DescribeReservedCapacity*
+                  - dynamodb:DescribeLimits
+                  - dynamodb:DescribeTimeToLive
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  #- dynamodb:BatchGet*
+                  #- dynamodb:DescribeStream
+                  #- dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  #- dynamodb:BatchWrite*
+                  #- dynamodb:CreateTable
+                  #- dynamodb:Delete*
+                  #- dynamodb:Update*
+                  #- dynamodb:PutItem
+                Resource: "*"
   CreateTaskFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -68,7 +135,37 @@ Resources:
             Method: POST
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          TABLE_NAME: sample_table
+          FRONT_ORIGIN: !Ref FrontOrigin
+          DYNAMODB_ENDPOINT: ""
+          TABLE_NAME: Task
+    ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Policies:
+        - PolicyName: GetTaskListFunction
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:List*
+                  - dynamodb:DescribeReservedCapacity*
+                  - dynamodb:DescribeLimits
+                  - dynamodb:DescribeTimeToLive
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  #- dynamodb:BatchGet*
+                  #- dynamodb:DescribeStream
+                  #- dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  #- dynamodb:BatchWrite*
+                  - dynamodb:CreateTable
+                  #- dynamodb:Delete*
+                  #- dynamodb:Update*
+                  - dynamodb:PutItem
+                Resource: "*"
   UpdateTaskListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -85,7 +182,37 @@ Resources:
             Method: PUT
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          TABLE_NAME: sample_table
+          FRONT_ORIGIN: !Ref FrontOrigin
+          DYNAMODB_ENDPOINT: ""
+          TABLE_NAME: Task
+    ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Policies:
+        - PolicyName: GetTaskListFunction
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:List*
+                  - dynamodb:DescribeReservedCapacity*
+                  - dynamodb:DescribeLimits
+                  - dynamodb:DescribeTimeToLive
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  #- dynamodb:BatchGet*
+                  #- dynamodb:DescribeStream
+                  #- dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  #- dynamodb:BatchWrite*
+                  - dynamodb:CreateTable
+                  #- dynamodb:Delete*
+                  - dynamodb:Update*
+                  - dynamodb:PutItem
+                Resource: "*"
   DeleteTaskListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -102,23 +229,48 @@ Resources:
             Method: DELETE
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
-          TABLE_NAME: sample_table
+          FRONT_ORIGIN: !Ref FrontOrigin
+          DYNAMODB_ENDPOINT: ""
+          TABLE_NAME: Task
+    ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Policies:
+        - PolicyName: GetTaskListFunction
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:List*
+                  - dynamodb:DescribeReservedCapacity*
+                  - dynamodb:DescribeLimits
+                  - dynamodb:DescribeTimeToLive
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  #- dynamodb:BatchGet*
+                  #- dynamodb:DescribeStream
+                  #- dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  #- dynamodb:BatchWrite*
+                  #- dynamodb:CreateTable
+                  - dynamodb:Delete*
+                  #- dynamodb:Update*
+                  #- dynamodb:PutItem
+                Resource: "*"
 
   SampleTable:
-    Type: AWS::DynamoDB::Table
+    Type: AWS::Serverless::SimpleTable
     Properties: 
-      TableName: sample_table
-      AttributeDefinitions: 
-        - AttributeName: sample_pk
-          AttributeType: S
-        - AttributeName: sample_sk
-          AttributeType: N
-      KeySchema: 
-        - AttributeName: sample_pk
-          KeyType: HASH
-        - AttributeName: sample_sk
-          KeyType: RANGE
-      BillingMode: PAY_PER_REQUEST
+      TableName: Task
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
@@ -129,7 +281,7 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   HelloWorldFunction:
     Description: "First Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
+    Value: !GetAtt GetTaskListFunction.Arn
   HelloWorldFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+    Value: !GetAtt GetTaskListFunction.Arn

@@ -1,6 +1,8 @@
 package dynamo
 
 import (
+	"os"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -23,7 +25,7 @@ type DatabaseHandler struct {
 func NewDynamoDatabaseHandler() *dynamo.DB {
 	sess, _ := session.NewSession(&aws.Config{
 		Region:      aws.String(AWS_REGION),
-		Endpoint:    aws.String(DYNAMO_ENDPOINT),
+		Endpoint:    aws.String(os.Getenv("DYNAMODB_ENDPOINT")),
 		Credentials: credentials.NewStaticCredentials("dummy", "dummy", "dummy"),
 	})
 

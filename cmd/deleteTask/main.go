@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/tokatu4561/tasks/pkg/application/di"
@@ -8,7 +10,7 @@ import (
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	headers := map[string]string{
-		"Access-Control-Allow-Origin":     "*",
+		"Access-Control-Allow-Origin":     os.Getenv("FRONT_ORIGIN"),
 		"Access-Control-Allow-Methods":    "DELETE",
 		"Access-Control-Allow-Credential": "true",
 		"Access-Control-Allow-Headers":    "Authorization,X-XSRF-TOKEN,Content-Type,ContentType,x-amz-security-token,x-amz-date",
