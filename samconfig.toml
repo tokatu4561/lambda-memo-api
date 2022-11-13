@@ -10,4 +10,4 @@ confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
 image_repositories = []
-parameter_overrides = "FrontOrigin=https://main.dtq6u00gtzcf6.amplifyapp.com"
+parameter_overrides = "FrontOrigin=https://main.d12jdcjhy5lmh.amplifyapp.com"

@@ -1,16 +1,13 @@
 package dynamo
 
 import (
-	"os"
-
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
 	"github.com/tokatu4561/tasks/pkg/domain"
 )
 
-// TODO: env管理する
+//FIXME:環境変数の管理
 const AWS_REGION = "ap-northeast-1"
 const DYNAMO_ENDPOINT = "http://dynamodb:8000"
 
@@ -25,8 +22,8 @@ type DatabaseHandler struct {
 func NewDynamoDatabaseHandler() *dynamo.DB {
 	sess, _ := session.NewSession(&aws.Config{
 		Region:      aws.String(AWS_REGION),
-		Endpoint:    aws.String(os.Getenv("DYNAMODB_ENDPOINT")),
-		Credentials: credentials.NewStaticCredentials("dummy", "dummy", "dummy"),
+		// Endpoint:    aws.String(os.Getenv("DYNAMODB_ENDPOINT")), //FIXME: ローカル接続のためには必要？？s
+		// Credentials: credentials.NewStaticCredentials("dummy", "dummy", "dummy"),
 	})
 
 	return dynamo.New(sess)

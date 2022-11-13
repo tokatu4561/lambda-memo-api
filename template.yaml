@@ -19,7 +19,7 @@ Globals:
   Api:
     TracingEnabled: True
     Cors:
-      AllowOrigin: "'https://main.dtq6u00gtzcf6.amplifyapp.com'"
+      AllowOrigin: "'https://main.d12jdcjhy5lmh.amplifyapp.com'"
       AllowCredentials: true
       AllowMethods: "'GET,POST,PUT,DELETE'"
       AllowHeaders: "'Authorization,X-XSRF-TOKEN,Content-Type,ContentType,x-amz-security-token,x-amz-date'"
@@ -44,34 +44,7 @@ Resources:
           FRONT_ORIGIN: !Ref FrontOrigin
           DYNAMODB_ENDPOINT: ""
           TABLE_NAME: Task
-    ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-    Policies:
-        - PolicyName: GetTaskListFunction
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:List*
-                  - dynamodb:DescribeReservedCapacity*
-                  - dynamodb:DescribeLimits
-                  - dynamodb:DescribeTimeToLive
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  #- dynamodb:BatchGet*
-                  #- dynamodb:DescribeStream
-                  #- dynamodb:DescribeTable
-                  - dynamodb:Get*
-                  - dynamodb:Query
-                  - dynamodb:Scan
-                  #- dynamodb:BatchWrite*
-                  #- dynamodb:CreateTable
-                  #- dynamodb:Delete*
-                  #- dynamodb:Update*
-                  #- dynamodb:PutItem
-                Resource: "*"
+      Role: !GetAtt FunctionRole.Arn
   GetTaskFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -91,34 +64,7 @@ Resources:
           FRONT_ORIGIN: !Ref FrontOrigin
           DYNAMODB_ENDPOINT: ""
           TABLE_NAME: Task
-    ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-    Policies:
-        - PolicyName: GetTaskListFunction
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:List*
-                  - dynamodb:DescribeReservedCapacity*
-                  - dynamodb:DescribeLimits
-                  - dynamodb:DescribeTimeToLive
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  #- dynamodb:BatchGet*
-                  #- dynamodb:DescribeStream
-                  #- dynamodb:DescribeTable
-                  - dynamodb:Get*
-                  - dynamodb:Query
-                  - dynamodb:Scan
-                  #- dynamodb:BatchWrite*
-                  #- dynamodb:CreateTable
-                  #- dynamodb:Delete*
-                  #- dynamodb:Update*
-                  #- dynamodb:PutItem
-                Resource: "*"
+      Role: !GetAtt FunctionRole.Arn
   CreateTaskFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -138,34 +84,7 @@ Resources:
           FRONT_ORIGIN: !Ref FrontOrigin
           DYNAMODB_ENDPOINT: ""
           TABLE_NAME: Task
-    ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-    Policies:
-        - PolicyName: GetTaskListFunction
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:List*
-                  - dynamodb:DescribeReservedCapacity*
-                  - dynamodb:DescribeLimits
-                  - dynamodb:DescribeTimeToLive
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  #- dynamodb:BatchGet*
-                  #- dynamodb:DescribeStream
-                  #- dynamodb:DescribeTable
-                  - dynamodb:Get*
-                  - dynamodb:Query
-                  - dynamodb:Scan
-                  #- dynamodb:BatchWrite*
-                  - dynamodb:CreateTable
-                  #- dynamodb:Delete*
-                  #- dynamodb:Update*
-                  - dynamodb:PutItem
-                Resource: "*"
+      Role: !GetAtt FunctionRole.Arn
   UpdateTaskListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -185,34 +104,7 @@ Resources:
           FRONT_ORIGIN: !Ref FrontOrigin
           DYNAMODB_ENDPOINT: ""
           TABLE_NAME: Task
-    ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-    Policies:
-        - PolicyName: GetTaskListFunction
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:List*
-                  - dynamodb:DescribeReservedCapacity*
-                  - dynamodb:DescribeLimits
-                  - dynamodb:DescribeTimeToLive
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  #- dynamodb:BatchGet*
-                  #- dynamodb:DescribeStream
-                  #- dynamodb:DescribeTable
-                  - dynamodb:Get*
-                  - dynamodb:Query
-                  - dynamodb:Scan
-                  #- dynamodb:BatchWrite*
-                  - dynamodb:CreateTable
-                  #- dynamodb:Delete*
-                  - dynamodb:Update*
-                  - dynamodb:PutItem
-                Resource: "*"
+      Role: !GetAtt FunctionRole.Arn
   DeleteTaskListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -232,10 +124,32 @@ Resources:
           FRONT_ORIGIN: !Ref FrontOrigin
           DYNAMODB_ENDPOINT: ""
           TABLE_NAME: Task
-    ManagedPolicyArns:
+      Role: !GetAtt FunctionRole.Arn
+  TaskTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties: 
+      TableName: Task
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+  FunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-    Policies:
-        - PolicyName: GetTaskListFunction
+      Policies:
+        - PolicyName: HelloWorldFunctionPolicies
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -248,30 +162,18 @@ Resources:
                 Resource: "*"
               - Effect: Allow
                 Action:
-                  #- dynamodb:BatchGet*
-                  #- dynamodb:DescribeStream
-                  #- dynamodb:DescribeTable
+                  - dynamodb:BatchGet*
+                  - dynamodb:DescribeStream
+                  - dynamodb:DescribeTable
                   - dynamodb:Get*
                   - dynamodb:Query
                   - dynamodb:Scan
-                  #- dynamodb:BatchWrite*
-                  #- dynamodb:CreateTable
+                  - dynamodb:BatchWrite*
+                  - dynamodb:CreateTable
                   - dynamodb:Delete*
-                  #- dynamodb:Update*
-                  #- dynamodb:PutItem
-                Resource: "*"
-
-  SampleTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties: 
-      TableName: Task
-      PrimaryKey:
-        Name: id
-        Type: String
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
-
+                  - dynamodb:Update*
+                  - dynamodb:PutItem
+                Resource: !GetAtt TaskTable.Arn
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
